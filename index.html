@@ -3,71 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מתרגם שפת הכישופים - מיינקראפט</title>
-</head>
-<body style="margin: 0; background-color: #1d1d1d;">
-
-<div style="font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #1d1d1d; color: #fff; text-align: center; padding: 40px 20px; min-height: 100vh;">
-    <h1 style="color: #55ff55; text-shadow: 2px 2px #000;">⚔️ מתרגם שפת הכישופים ⚔️</h1>
-    <p style="color: #aaa;">הקלד בכל אחת מהתיבות כדי לתרגם מיד לשני הכיוונים</p>
-
-    <div style="max-width: 500px; margin: 20px auto;">
-        <label style="display: block; text-align: left; margin-bottom: 5px; color: #55ff55;">English (אנגלית):</label>
-        <textarea id="engBox" oninput="toMinecraft()" placeholder="Type in English here..." style="width: 100%; height: 100px; font-size: 18px; padding: 12px; border-radius: 8px; border: 2px solid #555; background: #2b2b2b; color: white; box-sizing: border-box;"></textarea>
-        <button onclick="copyText('engBox')" style="margin-top: 8px; padding: 8px 16px; background: #3c8527; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">העתק אנגלית 📋</button>
-    </div>
-
-    <div style="max-width: 500px; margin: 30px auto;">
-        <label style="display: block; text-align: left; margin-bottom: 5px; color: #d67dff;">Enchanting Table (מיינקראפט):</label>
-        <textarea id="mcBox" oninput="fromMinecraft()" placeholder="∷⚍リᒷᓭ ⍑ᒷ∷ᒷ..." style="width: 100%; height: 100px; font-size: 22px; padding: 12px; border-radius: 8px; border: 2px solid #9b4dca; background: #2b2b2b; color: #e0aaff; box-sizing: border-box;"></textarea>
-        <button onclick="copyText('mcBox')" style="margin-top: 8px; padding: 8px 16px; background: #7b2cbf; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">העתק מיינקראפט 📋</button>
-    </div>
-</div>
-
-<script>
-    const alphabet = {
-        'a': 'ᔑ', 'b': 'ʖ', 'c': 'ᓵ', 'd': '↸', 'e': 'ᒷ',
-        'f': '⎓', 'g': '⊣', 'h': '⍑', 'i': '╎', 'j': '⋮',
-        'k': 'ꖌ', 'l': 'ꖎ', 'm': 'ᒲ', 'n': 'リ', 'o': '𝙹',
-        'p': '!¡', 'q': 'ᑑ', 'r': '∷', 's': 'ᓭ', 't': 'ℸ ̣',
-        'u': '⚍', 'v': '⍊', 'w': '∴', 'x': '̇/', 'y': '∥',
-        'z': '⨅'
-    };
-
-    function toMinecraft() {
-        const text = document.getElementById('engBox').value.toLowerCase();
-        let result = '';
-        for (let char of text) {
-            result += alphabet[char] || char;
+    <title>מתרגם שפות גלקטיות - מיינקראפט וסטאר וורס</title>
+    <!-- טעינת פונט Aurebesh של סטאר וורס מהרשת -->
+    <link href="https://cdnfonts.com" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background-color: #141414;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: #fff;
+            text-align: center;
+            padding: 30px 15px;
         }
-        document.getElementById('mcBox').value = result;
-    }
-
-    function fromMinecraft() {
-        let text = document.getElementById('mcBox').value;
-        text = text.replaceAll('!¡', 'p').replaceAll('ℸ ̣', 't').replaceAll('̇/', 'x');
+        select {
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            background-color: #2b2b2b;
+            color: #fff;
+            border: 2px solid #55ff55;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .box-container {
+            max-width: 550px;
+            margin: 20px auto;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        textarea {
+            width: 100%;
+            height: 110px;
+            font-size: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #555;
+            background: #222;
+            color: white;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        .btn-group {
+            margin-top: 8px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+        button {
+            padding: 8px 16px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .copy-btn { background: #3c8527; }
+        .clear-btn { background: #a83232; }
         
-        const reverseAlphabet = {};
-        for (let key in alphabet) {
-            if (alphabet[key].length === 1) {
-                reverseAlphabet[alphabet[key]] = key;
+        /* עיצוב מיוחד לתיבת הפלט בהתאם לשפה */
+        .minecraft-font {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-size: 22px;
+            border-color: #9b4dca;
+            color: #e0aaff;
+        }
+        .starwars-font {
+            font-family: 'Aurebesh', sans-serif;
+            font-size: 24px;
+            border-color: #ffe81f;
+            color: #ffe81f;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="mainTitle" style="color: #55ff55; text-shadow: 2px 2px #000;">⚔️ מתרגם שפות גלקטיות ⚔️</h1>
+    
+    <div>
+        <label for="langSelect" style="text-align: center; color: #ccc;">בחר שפה לתרגום:</label>
+        <select id="langSelect" onchange="changeLanguage()">
+            <option value="minecraft">🟩 מיינקראפט (שולחן כישופים)</option>
+            <option value="starwars">🚀 סטאר וורס (Aurebesh)</option>
+        </select>
+    </div>
+
+    <div class="box-container">
+        <label style="color: #55ff55;">English (אנגלית):</label>
+        <textarea id="engBox" dir="ltr" oninput="translateToTarget()" placeholder="Type in English here..."></textarea>
+        <div class="btn-group">
+            <button class="copy-btn" onclick="copyText('engBox')">העתק אנגלית 📋</button>
+            <button class="clear-btn" onclick="clearAll()">נקה הכל 🗑️</button>
+        </div>
+    </div>
+
+    <div class="box-container">
+        <label id="targetLabel" style="color: #d67dff;">Enchanting Table (מיינקראפט):</label>
+        <textarea id="targetBox" dir="ltr" class="minecraft-font" oninput="translateToEnglish()" placeholder="∷⚍リᒷᓭ ⍑ᒷ∷ᒷ..."></textarea>
+        <div class="btn-group">
+            <button id="copyTargetBtn" class="copy-btn" style="background: #7b2cbf;" onclick="copyText('targetBox')">העתק תרגום 📋</button>
+        </div>
+    </div>
+
+    <script>
+        const mcAlphabet = {
+            'a': 'ᔑ', 'b': 'ʖ', 'c': 'ᓵ', 'd': '↸', 'e': 'ᒷ',
+            'f': '⎓', 'g': '⊣', 'h': '⍑', 'i': '╎', 'j': '⋮',
+            'k': 'ꖌ', 'l': 'ꖎ', 'm': 'ᒲ', 'n': 'リ', 'o': '𝙹',
+            'p': '!¡', 'q': 'ᑑ', 'r': '∷', 's': 'ᓭ', 't': 'ℸ ̣',
+            'u': '⚍', 'v': '⍊', 'w': '∴', 'x': '̇/', 'y': '∥',
+            'z': '⨅'
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            const targetBox = document.getElementById('targetBox');
+            const targetLabel = document.getElementById('targetLabel');
+            const mainTitle = document.getElementById('mainTitle');
+            const langSelect = document.getElementById('langSelect');
+            const copyTargetBtn = document.getElementById('copyTargetBtn');
+
+            if (lang === 'minecraft') {
+                targetBox.className = 'minecraft-font';
+                targetLabel.innerText = 'Enchanting Table (מיינקראפט):';
+                targetLabel.style.color = '#d67dff';
+                targetBox.placeholder = '∷⚍リᒷᓭ ⍑ᒷ∷ᒷ...';
+                mainTitle.style.color = '#55ff55';
+                langSelect.style.borderColor = '#55ff55';
+                copyTargetBtn.style.background = '#7b2cbf';
+            } else if (lang === 'starwars') {
+                targetBox.className = 'starwars-font';
+                targetLabel.innerText = 'Aurebesh (סטאר וורס):';
+                targetLabel.style.color = '#ffe81f';
+                targetBox.placeholder = 'May the force be with you...';
+                mainTitle.style.color = '#ffe81f';
+                langSelect.style.borderColor = '#ffe81f';
+                copyTargetBtn.style.background = '#d4b800';
+                copyTargetBtn.style.color = '#000';
+            }
+            // מתרגם מחדש את הטקסט הקיים לפי השפה שנבחרה
+            translateToTarget();
+        }
+
+        function translateToTarget() {
+            const lang = document.getElementById('langSelect').value;
+            const text = document.getElementById('engBox').value;
+            
+            if (lang === 'minecraft') {
+                let result = '';
+                for (let char of text.toLowerCase()) {
+                    result += mcAlphabet[char] || char;
+                }
+                document.getElementById('targetBox').value = result;
+            } else if (lang === 'starwars') {
+                // באורבש הפונט עצמו ממיר את האותיות הלטיניות לצורות הגלקטיות
+                document.getElementById('targetBox').value = text;
             }
         }
 
-        let result = '';
-        for (let char of text) {
-            result += reverseAlphabet[char] || char;
-        }
-        document.getElementById('engBox').value = result;
-    }
+        function translateToEnglish() {
+            const lang = document.getElementById('langSelect').value;
+            let text = document.getElementById('targetBox').value;
 
-    function copyText(boxId) {
-        const box = document.getElementById(boxId);
-        box.select();
-        navigator.clipboard.writeText(box.value);
-        alert("הטקסט הועתק בהצלחה!");
-    }
-</script>
+            if (lang === 'minecraft') {
+                text = text.replaceAll('!¡', 'p').replaceAll('ℸ ̣', 't').replaceAll('̇/', 'x');
+                const reverseAlphabet = {};
+                for (let key in mcAlphabet) {
+                    if (mcAlphabet[key].length === 1) {
+                        reverseAlphabet[mcAlphabet[key]] = key;
+                    }
+                }
+                let result = '';
+                for (let char of text) {
+                    result += reverseAlphabet[char] || char;
+                }
+                document.getElementById('engBox').value = result;
+            } else if (lang === 'starwars') {
+                document.getElementById('engBox').value = text;
+            }
+        }
+
+        function copyText(boxId) {
+            const box = document.getElementById(boxId);
+            box.select();
+            navigator.clipboard.writeText(box.value);
+            alert("הטקסט הועתק בהצלחה!");
+        }
+
+        function clearAll() {
+            document.getElementById('engBox').value = '';
+            document.getElementById('targetBox').value = '';
+        }
+    </script>
 
 </body>
 </html>
