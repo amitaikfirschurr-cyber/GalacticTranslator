@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מתרגם שפות גלקטיות - מיינקראפט וסטאר וורס</title>
-    <!-- טעינת פונט Aurebesh של סטאר וורס מהרשת -->
+    <title>מתרגם שפות גלקטיות ושפת ה-ב'</title>
     <link href="https://cdnfonts.com" rel="stylesheet">
     <style>
         body {
@@ -32,7 +31,7 @@
         }
         label {
             display: block;
-            text-align: left;
+            text-align: right;
             margin-bottom: 6px;
             font-weight: bold;
             font-size: 16px;
@@ -67,7 +66,6 @@
         .copy-btn { background: #3c8527; }
         .clear-btn { background: #a83232; }
         
-        /* עיצוב מיוחד לתיבת הפלט בהתאם לשפה */
         .minecraft-font {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             font-size: 22px;
@@ -81,6 +79,12 @@
             color: #ffe81f;
             letter-spacing: 2px;
         }
+        .bet-font {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-size: 20px;
+            border-color: #00d2ff;
+            color: #80e5ff;
+        }
     </style>
 </head>
 <body>
@@ -92,20 +96,21 @@
         <select id="langSelect" onchange="changeLanguage()">
             <option value="minecraft">🟩 מיינקראפט (שולחן כישופים)</option>
             <option value="starwars">🚀 סטאר וורס (Aurebesh)</option>
+            <option value="bet">🇮🇱 שפת ה-ב' (עברית)</option>
         </select>
     </div>
 
     <div class="box-container">
-        <label style="color: #55ff55;">English (אנגלית):</label>
+        <label id="sourceLabel" style="color: #55ff55; text-align: left;">English (אנגלית):</label>
         <textarea id="engBox" dir="ltr" oninput="translateToTarget()" placeholder="Type in English here..."></textarea>
         <div class="btn-group">
-            <button class="copy-btn" onclick="copyText('engBox')">העתק אנגלית 📋</button>
+            <button class="copy-btn" onclick="copyText('engBox')">העתק מקור 📋</button>
             <button class="clear-btn" onclick="clearAll()">נקה הכל 🗑️</button>
         </div>
     </div>
 
     <div class="box-container">
-        <label id="targetLabel" style="color: #d67dff;">Enchanting Table (מיינקראפט):</label>
+        <label id="targetLabel" style="color: #d67dff; text-align: left;">Enchanting Table (מיינקראפט):</label>
         <textarea id="targetBox" dir="ltr" class="minecraft-font" oninput="translateToEnglish()" placeholder="∷⚍リᒷᓭ ⍑ᒷ∷ᒷ..."></textarea>
         <div class="btn-group">
             <button id="copyTargetBtn" class="copy-btn" style="background: #7b2cbf;" onclick="copyText('targetBox')">העתק תרגום 📋</button>
@@ -124,13 +129,23 @@
 
         function changeLanguage() {
             const lang = document.getElementById('langSelect').value;
+            const engBox = document.getElementById('engBox');
             const targetBox = document.getElementById('targetBox');
+            const sourceLabel = document.getElementById('sourceLabel');
             const targetLabel = document.getElementById('targetLabel');
             const mainTitle = document.getElementById('mainTitle');
             const langSelect = document.getElementById('langSelect');
             const copyTargetBtn = document.getElementById('copyTargetBtn');
 
+            copyTargetBtn.style.color = '#fff';
+
             if (lang === 'minecraft') {
+                engBox.dir = 'ltr';
+                targetBox.dir = 'ltr';
+                sourceLabel.style.textAlign = 'left';
+                targetLabel.style.textAlign = 'left';
+                sourceLabel.innerText = 'English (אנגלית):';
+                engBox.placeholder = 'Type in English here...';
                 targetBox.className = 'minecraft-font';
                 targetLabel.innerText = 'Enchanting Table (מיינקראפט):';
                 targetLabel.style.color = '#d67dff';
@@ -139,6 +154,12 @@
                 langSelect.style.borderColor = '#55ff55';
                 copyTargetBtn.style.background = '#7b2cbf';
             } else if (lang === 'starwars') {
+                engBox.dir = 'ltr';
+                targetBox.dir = 'ltr';
+                sourceLabel.style.textAlign = 'left';
+                targetLabel.style.textAlign = 'left';
+                sourceLabel.innerText = 'English (אנגלית):';
+                engBox.placeholder = 'Type in English here...';
                 targetBox.className = 'starwars-font';
                 targetLabel.innerText = 'Aurebesh (סטאר וורס):';
                 targetLabel.style.color = '#ffe81f';
@@ -147,9 +168,47 @@
                 langSelect.style.borderColor = '#ffe81f';
                 copyTargetBtn.style.background = '#d4b800';
                 copyTargetBtn.style.color = '#000';
+            } else if (lang === 'bet') {
+                engBox.dir = 'rtl';
+                targetBox.dir = 'rtl';
+                sourceLabel.style.textAlign = 'right';
+                targetLabel.style.textAlign = 'right';
+                sourceLabel.innerText = 'עברית רגילה:';
+                engBox.placeholder = 'הקלד משפט בעברית כאן...';
+                targetBox.className = 'bet-font';
+                targetLabel.innerText = "שפת ה-ב':";
+                targetLabel.style.color = '#00d2ff';
+                targetBox.placeholder = 'הבּקלד מִשׁבּפּט בּעִבּרִית כּאבּן...';
+                mainTitle.style.color = '#00d2ff';
+                langSelect.style.borderColor = '#00d2ff';
+                copyTargetBtn.style.background = '#0088cc';
             }
-            // מתרגם מחדש את הטקסט הקיים לפי השפה שנבחרה
             translateToTarget();
+        }
+
+        function toBetLanguage(text) {
+            // מזהה תנועות (אהו"י) באמצע או סוף מילה ומכפיל אותן עם האות ב'
+            return text.split(' ').map(word => {
+                if (word.length <= 1) return word;
+                // מחליף אותיות אהו"י (שאינן בתחילת מילה) ב: אות + ב + אות
+                let res = word[0];
+                for (let i = 1; i < word.length; i++) {
+                    const ch = word[i];
+                    if ('אהוי'.includes(ch) && i < word.length - 1) {
+                        res += ch + 'ב' + ch;
+                    } else if ('אהוי'.includes(ch) && i === word.length - 1 && !'םןץףך'.includes(ch)) {
+                        res += ch + 'ב' + ch;
+                    } else {
+                        res += ch;
+                    }
+                }
+                return res;
+            }).join(' ');
+        }
+
+        function fromBetLanguage(text) {
+            // פענוח בסיסי של שפת ה-ב' חזרה לעברית
+            return text.replace(/([אהוי])ב\1/g, '$1');
         }
 
         function translateToTarget() {
@@ -163,8 +222,9 @@
                 }
                 document.getElementById('targetBox').value = result;
             } else if (lang === 'starwars') {
-                // באורבש הפונט עצמו ממיר את האותיות הלטיניות לצורות הגלקטיות
                 document.getElementById('targetBox').value = text;
+            } else if (lang === 'bet') {
+                document.getElementById('targetBox').value = toBetLanguage(text);
             }
         }
 
@@ -186,22 +246,3 @@
                 }
                 document.getElementById('engBox').value = result;
             } else if (lang === 'starwars') {
-                document.getElementById('engBox').value = text;
-            }
-        }
-
-        function copyText(boxId) {
-            const box = document.getElementById(boxId);
-            box.select();
-            navigator.clipboard.writeText(box.value);
-            alert("הטקסט הועתק בהצלחה!");
-        }
-
-        function clearAll() {
-            document.getElementById('engBox').value = '';
-            document.getElementById('targetBox').value = '';
-        }
-    </script>
-
-</body>
-</html>
